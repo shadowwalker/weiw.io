@@ -1,23 +1,620 @@
-{% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
 
-{% block title %}{{ page.title }} | {{ title }}{% endblock %}
 
-{% block page_class %}page-post-detail{% endblock %}
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="manifest" href="/img/favicons/manifest.json">
 
-{% block content %}
+<link rel="stylesheet" href="/css/main.css">
 
-  <div id="posts" class="posts-expand">
-    {{ post_template.render(page) }}
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"weiw.io","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":null,"activeClass":"disqus"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="FWTA is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as Server Side Rendering (SSR), Progressive Web Applica">
+<meta property="og:type" content="article">
+<meta property="og:title" content="From Web to App 1">
+<meta property="og:url" content="https://weiw.io/2019/04/15/From-Web-To-App-1/index.html">
+<meta property="og:site_name" content="ShadowWalker&#39;s Blog">
+<meta property="og:description" content="FWTA is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as Server Side Rendering (SSR), Progressive Web Applica">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-04-16T03:33:23.000Z">
+<meta property="article:modified_time" content="2020-07-03T05:47:06.440Z">
+<meta property="article:author" content="ShadowWalker">
+<meta property="article:tag" content="Web App">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="PWA">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://weiw.io/2019/04/15/From-Web-To-App-1/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+<title>From Web to App 1 | ShadowWalker's Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="ShadowWalker's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
   </div>
 
-{% endblock %}
+  <div class="site-meta">
 
-{% block sidebar %}
-  {{ sidebar_template.render(true) }}
-{% endblock %}
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">ShadowWalker's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">code, cook, reboot_</p>
+  </div>
 
-{% block script_extra %}
-  {% include '_scripts/pages/post-details.swig' %}
-{% endblock %}
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why"><span class="nav-number">1.</span> <span class="nav-text">Why</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation"><span class="nav-number">2.</span> <span class="nav-text">Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Setup"><span class="nav-number">3.</span> <span class="nav-text">Setup</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Git"><span class="nav-number">3.1.</span> <span class="nav-text">Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Yarn"><span class="nav-number">3.2.</span> <span class="nav-text">Yarn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Install-Dependencies"><span class="nav-number">3.3.</span> <span class="nav-text">Install Dependencies</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#First-Web-App-with-SSR"><span class="nav-number">4.</span> <span class="nav-text">First Web App with SSR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Index"><span class="nav-number">4.1.</span> <span class="nav-text">Index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scripts"><span class="nav-number">4.2.</span> <span class="nav-text">Scripts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-Development-Server"><span class="nav-number">4.3.</span> <span class="nav-text">Run Development Server</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">5.</span> <span class="nav-text">Summary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Next"><span class="nav-number">6.</span> <span class="nav-text">Next</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ShadowWalker</p>
+  <div class="site-description" itemprop="description">ShadowWalker's Personal Blog</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/shadowwalker" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;shadowwalker" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:w@weiw.io" title="E-Mail → mailto:w@weiw.io"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/weiwio/" title="LinkedIn → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;weiwio&#x2F;" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://weiw.io/2019/04/15/From-Web-To-App-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ShadowWalker">
+      <meta itemprop="description" content="ShadowWalker's Personal Blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ShadowWalker's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          From Web to App 1
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-04-15 20:33:23" itemprop="dateCreated datePublished" datetime="2019-04-15T20:33:23-07:00">2019-04-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-07-02 22:47:06" itemprop="dateModified" datetime="2020-07-02T22:47:06-07:00">2020-07-02</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FWTA/" itemprop="url" rel="index"><span itemprop="name">FWTA</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/04/15/From-Web-To-App-1/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/04/15/From-Web-To-App-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote class="blockquote-center">
+<p><strong>FWTA</strong> is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as <strong>Server Side Rendering (SSR), Progressive Web Application (PWA), Accelerated Mobile Pages (AMP), PRPL Pattern, Severless Backend</strong>.</p>
+
+</blockquote>
+
+<p>The final product of <strong>FWTA</strong> would be a cross-platform mobile progressive web app which</p>
+<ul>
+<li>has user experience and features close to native app</li>
+<li>runs on major platforms with responsive design</li>
+<li>optimizes performance on major platforms</li>
+<li>is discoverable using search engine (SEO)</li>
+<li>is hosted on serverless cloud infrastructure</li>
+<li>runs with offline support </li>
+<li>updates seamlessly</li>
+<li>distribute freely without app store</li>
+</ul>
+<p>This is one of the article series which records thoughts and notes during my implementation of <strong>FWTA</strong>.</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/shadowwalker/FWTA">Github</a></li>
+<li><a target="_blank" rel="noopener" href="https://fwta.weiw.io/">Demo</a></li>
+</ul>
+<p>First things first, let’s get started and setup the project.</p>
+<a id="more"></a>
+
+<h2 id="Why"><a href="#Why" class="headerlink" title="Why"></a>Why</h2><p>So, where is this idea coming from?</p>
+<p>Back in the time when I was at fifth grade in elementary school, I was given a task to create a web page for my class. That was my first experience with web “development”, I used Microsoft Front Page to create static web pages, write some HTML I learnt from books with few CSS styling (Adobe DreamWaver was starting to trend at that time, but it was too complicated for me). Quickly, I learned how to copy javascript (yes, few website uglify and minify js at that time) from other website source code to add some “features” to my static website. The biggest accomplishment I could remember is a big clock sticky to the right bottom corner of my page while scrolling. I deployed my website using ftp protocol simpliy by copy and pasting the files to the server.</p>
+<p><a target="_blank" rel="noopener" href="https://whatwebcando.today/">What web can do today</a> has been largely changed in the past decades, <a target="_blank" rel="noopener" href="http://javascript.info/">morden JavaScript</a> also changed not only in its syntax but also the way developers work with it. <a target="_blank" rel="noopener" href="https://babeljs.io/">Babel</a>, ES6 and frameworks such as <a target="_blank" rel="noopener" href="https://reactjs.org/">react.js</a> and <a target="_blank" rel="noopener" href="https://vuejs.org/">vue.js</a> changed the way programmers think about web development. Though browser still works with HTML(5), stylesheets and javascript, just like old days, developers no longer have to deal with large trunk of codes, instead,  they write clean, small and manageable modules, based on which to compose complicated multi function web application. The history has buried Flash, which put web app more dependent on advanced javascript techniques. The revolution does not only happen in the web frontend, <a target="_blank" rel="noopener" href="https://nodejs.org/">node.js</a> enables javascript to jail break browsers and runs almost everywhere, including server or serverless backends.</p>
+<p>There is no doubt that web has become stronger and anywhere, this is an achievement by putting decades of efforts from large tech companies together with W3C to standardize web experience.</p>
+<p>Nowadays, it’s possible to create web app close to native app which does exactly same job. Even in cases where there are limitations for pure web app, the emerging hybrid frameworks such as <a target="_blank" rel="noopener" href="https://electronjs.org/">electron.js</a>,  <a target="_blank" rel="noopener" href="https://ionicframework.com/">ionic.js</a> and <a target="_blank" rel="noopener" href="https://facebook.github.io/react-native/">react native</a> could come to rescue. Those frameworks have made a lot of famous application possible, such as <a target="_blank" rel="noopener" href="https://code.visualstudio.com/">VS Code</a> and <a target="_blank" rel="noopener" href="https://code.fb.com/android/dive-into-react-native-performance/">Facebook</a>.</p>
+<h2 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h2><p><strong>FWTA</strong> is a demonstration of what web app can do compare to native apps, by exploring and pushing boundaries of current tools and technologies. But when it comes to implementation, I have to choose a relatively wise path to achieve the goal, my choose of frameworks and implementation is based on my experience. Here is a list of major building blocks I would use:</p>
+<p><em><a target="_blank" rel="noopener" href="http://javascript.info/">JavaScript</a> + <a target="_blank" rel="noopener" href="https://www.typescriptlang.org/">TypeScript</a></em></p>
+<p>Programing languages that runs on both backend and frontend. Intially when I heard of TypeScript, I thought it’s a bad idea, as it seems to bring back the nuisance from C++, which is what JavaScript tends to avoid. But it’s actually brilliant which gives quick hints and type check during the development, it could speed up development a lot. (I still don’t like <a target="_blank" rel="noopener" href="https://palantir.github.io/tslint/">TSLint</a> though)</p>
+<p><em><a target="_blank" rel="noopener" href="https://nextjs.org/">Next.js</a> + <a target="_blank" rel="noopener" href="https://reactjs.org/">React.js</a></em></p>
+<p>Like a lot others in the community, these are my favorite frameworks so far. There are still a list of things I want to explore:</p>
+<ul>
+<li>Use <a target="_blank" rel="noopener" href="https://amp.dev/">AMP</a> to optimize page load performance - <a target="_blank" rel="noopener" href="https://github.com/zeit/next.js/tree/canary/examples/amp">example</a></li>
+<li>Explore if it’s worth to use light weight <a target="_blank" rel="noopener" href="https://preactjs.com/">Preact.js</a> instead of react - <a target="_blank" rel="noopener" href="https://github.com/zeit/next.js/tree/canary/examples/using-preact">example</a></li>
+<li>Another interesting alternative lit-html from <a target="_blank" rel="noopener" href="https://www.polymer-project.org/">Polymer Project</a>, this experimental project is created by teams from Google Chrome, and the performance is great.</li>
+<li>Revisit <a target="_blank" rel="noopener" href="https://developers.google.com/web/fundamentals/performance/prpl-pattern/">RPRL Pattern</a> for further performance optimization.</li>
+</ul>
+<p>Other good options here would be <a target="_blank" rel="noopener" href="https://nuxtjs.org/">Nuxt.js</a> + <a target="_blank" rel="noopener" href="https://vuejs.org/">Vue.js</a>.</p>
+<p>When choosing frameworks, libraries and tools, I found some good resource:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://stefankrause.net/js-frameworks-benchmark8/table.html">JS Frameworks Benchmark</a> by <a target="_blank" rel="noopener" href="https://www.stefankrause.net/wp/">Stefan Krause</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@ajmeyghani/javascript-bundlers-a-comparison-e63f01f2a364">JS Bundlers Comparison</a> by <a target="_blank" rel="noopener" href="https://medium.com/@ajmeyghani">AJ Meyghani</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@ajmeyghani/javascript-frameworks-performance-comparison-c566d19ab65b">JS Frameworks Battle using benchmark above</a> by <a target="_blank" rel="noopener" href="https://medium.com/@ajmeyghani">AJ Meyghani</a></li>
+</ul>
+<p><em><a target="_blank" rel="noopener" href="https://material-ui.com/">Material-UI</a></em></p>
+<p><a target="_blank" rel="noopener" href="https://material.io/design/">Material Design</a> seems to be the new fashion as Google leads the trend, material-ui is a very good UI  component library implemented the design language in react. There are bunch of other great frameworks as well, sky is the limit.</p>
+<p><em><a target="_blank" rel="noopener" href="https://jest.io/">Jest.js</a> + <a target="_blank" rel="noopener" href="https://airbnb.io/enzyme/">Enzyme</a></em></p>
+<p>One benefit of utilizing modular component based concept is that it’s easy to implement tests. They make products more robust and reliable.</p>
+<p>There are so many other good staff, but all the projects above are backed by strong and active open source community, enough to build confidence in production use.</p>
+<p><em><a target="_blank" rel="noopener" href="https://developers.google.com/web/tools/workbox/">Workbox</a></em></p>
+<p>Workbox is a set of libraries and Node modules that make it easy to cache assets and take full advantage of features used to build <a target="_blank" rel="noopener" href="https://developers.google.com/web/progressive-web-apps/">Progressive Web Apps</a>.</p>
+<h2 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h2><h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h3><p>Init git repository.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">touch README.md LICENSE</span><br><span class="line">...</span><br><span class="line">git init</span><br><span class="line">git add --all</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git remote add origin git@github.com:shadowwalker/FWTA.git</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<p>Add <code>.gitignore</code> generated from <a target="_blank" rel="noopener" href="https://www.gitignore.io/?templates=vim,node,linux,macos,windows,firebase,sublimetext,intellij+all,visualstudiocode">here</a>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch .gitignore</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="Yarn"><a href="#Yarn" class="headerlink" title="Yarn"></a>Yarn</h3><p>Init with yarn.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yarn init</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="Install-Dependencies"><a href="#Install-Dependencies" class="headerlink" title="Install Dependencies"></a>Install Dependencies</h3><p>We are going to start with <a target="_blank" rel="noopener" href="https://nextjs.org/">next.js</a> and <a target="_blank" rel="noopener" href="https://reactjs.org/">react.js</a>, this give you SSR by default.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add next react react-dom</span><br></pre></td></tr></table></figure>
+<h2 id="First-Web-App-with-SSR"><a href="#First-Web-App-with-SSR" class="headerlink" title="First Web App with SSR"></a>First Web App with SSR</h2><h3 id="Index"><a href="#Index" class="headerlink" title="Index"></a>Index</h3><p>Create a <code>pages</code> folder with a <code>index.js</code> file.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir pages</span><br><span class="line"><span class="built_in">cd</span> pages</span><br><span class="line">touch index.js</span><br></pre></td></tr></table></figure>
+<p>Modify index.js with following.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> () =&gt; (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>FWTA first web app<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br></pre></td></tr></table></figure>
+<h3 id="Scripts"><a href="#Scripts" class="headerlink" title="Scripts"></a>Scripts</h3><p>Add some scripts in <code>package.json</code> for convenience.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;dev&quot;: &quot;next&quot;,</span><br><span class="line">  &quot;build&quot;: &quot;next build&quot;,</span><br><span class="line">  &quot;start&quot;: &quot;next start&quot;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="Run-Development-Server"><a href="#Run-Development-Server" class="headerlink" title="Run Development Server"></a>Run Development Server</h3><p>Start dev server. This create a temp <code>.next</code> folder to save files compiled.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn dev</span><br></pre></td></tr></table></figure>
+<p>Now you can access your SSR web app at <a target="_blank" rel="noopener" href="http://localhost:3000/">localhost:3000</a>, hot reloading is enabled during development for free.</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>To recap, I have created a SSR web app running on node.js with next.js and react.js framework. You can find a snapshot commit  <a target="_blank" rel="noopener" href="https://github.com/shadowwalker/FWTA/tree/b15f34922f107e2e51d1f651372760fe1ef5d8ef">here</a>.</p>
+<h2 id="Next"><a href="#Next" class="headerlink" title="Next"></a>Next</h2><p>Deploy to firebase, static hosting, serverless functions, SSL and more…</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web-App/" rel="tag"># Web App</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/PWA/" rel="tag"># PWA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/15/Progressive-Web-App/" rel="prev" title="Progressive Web App">
+                  <i class="fa fa-chevron-left"></i> Progressive Web App
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/04/17/From-Web-To-App-2/" rel="next" title="From Web to App 2">
+                  From Web to App 2 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ShadowWalker</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+  <script src="//cdn.jsdelivr.net/npm/firebase@8.1.1/firebase-app.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/firebase@8.1.1/firebase-firestore.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey   : 'AIzaSyDVM8tdK8Cf59my17OyRAAXn9PbAWoPaxo',
+      projectId: 'weiwio'
+    });
+
+    function getCount(doc, increaseCount) {
+      // IncreaseCount will be false when not in article page
+      return doc.get().then(d => {
+        // Has no data, initialize count
+        let count = d.exists ? d.data().count : 0;
+        // If first view this article
+        if (increaseCount) {
+          // Increase count
+          count++;
+          doc.set({
+            count
+          });
+        }
+        return count;
+      });
+    }
+
+    function appendCountTo(el) {
+      return count => {
+        el.innerText = count;
+      };
+    }
+  </script>
+  <script>
+    (function() {
+      const db = firebase.firestore();
+      const articles = db.collection('articles');
+
+      if (CONFIG.page.isPost) {
+        // Fix issue #118
+        // https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent
+        const title = document.querySelector('.post-title').textContent.trim();
+        const doc = articles.doc(title);
+        let increaseCount = CONFIG.hostname === location.hostname;
+        if (localStorage.getItem(title)) {
+          increaseCount = false;
+        } else {
+          // Mark as visited
+          localStorage.setItem(title, true);
+        }
+        getCount(doc, increaseCount).then(appendCountTo(document.querySelector('.firestore-visitors-count')));
+      } else if (CONFIG.page.isHome) {
+        const promises = [...document.querySelectorAll('.post-title')].map(element => {
+          const title = element.textContent.trim();
+          const doc = articles.doc(title);
+          return getCount(doc);
+        });
+        Promise.all(promises).then(counts => {
+          const metas = document.querySelectorAll('.firestore-visitors-count');
+          counts.forEach((val, idx) => {
+            appendCountTo(metas[idx])(val);
+          });
+        });
+      }
+    })();
+  </script>
+
+
+
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://weiwio.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://weiw.io/2019/04/15/From-Web-To-App-1/";
+    this.page.identifier = "2019/04/15/From-Web-To-App-1/";
+    this.page.title = "From Web to App 1";
+    };
+  NexT.utils.loadComments('#disqus_thread', () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://weiwio.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
