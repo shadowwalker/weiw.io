@@ -147,6 +147,88 @@
       </tags>
   </entry>
   <entry>
+    <title>From Web to App 2</title>
+    <url>/2019/04/17/From-Web-To-App-2/</url>
+    <content><![CDATA[<blockquote class="blockquote-center">
+<p><strong><a href="https://weiw.io/2019/04/15/From-Web-To-App-1">FWTA</a></strong> is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as <strong>Server Side Rendering (SSR), Progressive Web Application (PWA), Accelerated Mobile Pages (AMP), PRPL Pattern, Severless Backend</strong>.</p>
+
+</blockquote>
+
+<p>This is one of the article series which records thoughts and notes during my implementation of <strong>FWTA</strong>.</p>
+<ul>
+<li><a href="https://github.com/shadowwalker/FWTA">Github</a></li>
+<li><a href="https://fwta.weiw.io/">Demo</a></li>
+</ul>
+<p>In the previous article, I have setup a very simple web app with next.js and react.js. It feaures hot reloading in development and SSR, and has only one DOM in the index page:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;div&gt;FWTA first web app&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>In this article, I will setup cloud infrastructure, deploy and publish the web app to the world. Then continue setup with some of my favorite settings. From this point, it makes sense to use my favorite IDE or editor, a.k.a <a href="https://code.visualstudio.com/">VS Code</a>.</p>
+<a id="more"></a>
+
+<h2 id="Cloud"><a href="#Cloud" class="headerlink" title="Cloud"></a>Cloud</h2><p><em>Cloud</em> has been a popular term in the industry for years, it provides services and tools to help startups and developers to establish their business. There are a lot of cloud services providers now, and it will be more, just like the clouds on the sky.</p>
+<p>I personally have some experience with <a href="https://aws.amazon.com/">AWS</a>, <a href="https://azure.microsoft.com/en-us/">Azure</a>, <a href="https://cloud.google.com/">GCP</a>, <a href="https://zeit.co/">Zeit</a>, <a href="https://firebase.google.com/">Firebase</a>, as well as cloud services providers from China, such as <a href="https://www.alibabacloud.com/">Alibaba Cloud</a>, <a href="https://intl.cloud.tencent.com/">Tencent Cloud</a>, <a href="https://www.qiniu.com/">Qi Niu</a>.</p>
+<blockquote>
+<p>If you’d like to run business in Chinese Market, I recommend to host your web app and purchase domain with providers from China for easier and faster compliance.</p>
+</blockquote>
+<p>All of the cloud servcies mentioned above are great candidates for consideration when start something new. I would use Firebase with free plan here for simplicity and keep everything under control, it’s backed by Google Cloud.</p>
+<h2 id="Serverless"><a href="#Serverless" class="headerlink" title="Serverless"></a>Serverless</h2><p>In the “stone age”, people bought physical machines, put them on the rack in a clean glass sealed room. They also bought a lot of network devices, such as routers, switcher in order to turn those machines into servers. They spent a big amount of time configuring routers, switchers, DNS and paying electricity bills. And hire others to keep the machines working 24h x 7. If they still have time and money, they hire somebody else to write code for business.</p>
+<p>In the “age of cloud”, large companies bought those machines and devices, put them into large warehouses, and does every single dirty but common job for you. Let you focus on writing code for business by renting you the well prepared and maintained machines. They encourage customers to use their cloud services by buying out all the machine, SSD, RAM on the market. They maximize profits by cutting the machines into multiple pieces then rent the pieces out, they call them Virtual Machines, sometimes also called Containers when cutting into even more pieces.</p>
+<p>Now, in the “age of serverless cloud”, those large companies hide the process of signing contracts for those pieces of machines. You hand over your codes, they will execute them for you. Though these codes would likely to be executed on the same pieces of machines, you don’t have to touch them anymore and even not feeling they exist. Yep, this is what I am about to do.</p>
+<h2 id="Prepare"><a href="#Prepare" class="headerlink" title="Prepare"></a>Prepare</h2><h3 id="Restructure-Source-Code"><a href="#Restructure-Source-Code" class="headerlink" title="Restructure Source Code"></a>Restructure Source Code</h3><p>Before I mess things up, I’d like to restructure source code. This will give me benefits which is not so obvious now. Simply move <code>pages</code> folder inside a new folder <code>src/app</code>. View the <a href="https://github.com/shadowwalker/FWTA/tree/32487fd20b8c35bbf680ce24522713aad29109df">new folder structure</a>.</p>
+<h3 id="Update-Dependencies-and-Scripts"><a href="#Update-Dependencies-and-Scripts" class="headerlink" title="Update Dependencies and Scripts"></a>Update Dependencies and Scripts</h3><p>Update <code>package.json</code> like <a href="https://github.com/shadowwalker/FWTA/blob/fa2ba8cd04b21d33371e1b2b5dd45ff09c3f5e1c/package.json">this</a>. Remove <code>node_modules</code>, reinstall dependencies with <code>yarn install</code>.</p>
+<p>Note that I moved <code>next react react-dom</code> into dev dependencies, because I will use <a href="https://nextjs.org/blog/next-8#serverless-nextjs">next.js 8 build serverless target feature</a>, which will bundle up everthing needed and there is no runtime dependencies needed from <code>node_modules</code> on next.js side.</p>
+<p>The second thing to notice is I added engines configuration</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">&quot;engines&quot;: &#123;</span><br><span class="line">  &quot;node&quot;: &quot;8&quot;</span><br><span class="line">&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>This is needed to tell firebase functions to use node.js 8 as running environment, otherwise the default version is 6. Currently only node.js 6 and 8 are supported. <a href="https://cloud.google.com/functions/docs/concepts/nodejs-10-runtime">Google just made node.js 10 available as beta on GCP Cloud Functions</a>, but not on firebase side, so hope this would be my option soon.</p>
+<p>The third thing to notice is that I use <a href="https://www.npmjs.com/package/npm-run-all">npm-run-all</a> to run sequential and parallel scripts, this is the technique really works for me to organize steps and tasks, keep things nice and clean.</p>
+<h3 id="Scripts-For-Release-and-Clean-Up"><a href="#Scripts-For-Release-and-Clean-Up" class="headerlink" title="Scripts For Release and Clean Up"></a>Scripts For Release and Clean Up</h3><p>Add these simple scripts <a href="https://github.com/shadowwalker/FWTA/blob/fa2ba8cd04b21d33371e1b2b5dd45ff09c3f5e1c/scripts/release.js">scripts/release.js</a> and <a href="https://github.com/shadowwalker/FWTA/blob/fa2ba8cd04b21d33371e1b2b5dd45ff09c3f5e1c/scripts/clean.js">scripts/clean.js</a>. This may not make sense yet, but what it’s trying to do is pretty clear. The former copy some files into some locations under <code>dist</code> folder to get ready for deployment, the latter cleans those folders up.</p>
+<blockquote>
+<p>Add <code>dist/</code> folder to .gitignore as it’s produced by release process.</p>
+</blockquote>
+<h2 id="Firebase-Setup"><a href="#Firebase-Setup" class="headerlink" title="Firebase Setup"></a>Firebase Setup</h2><h3 id="Create-Project"><a href="#Create-Project" class="headerlink" title="Create Project"></a>Create Project</h3><p>Go to <a href="https://firebase.google.com/">Firebase</a>, sign up free account and create new project, note down the project ID: <code>fwta-weiwio</code>.</p>
+<h3 id="Add-Configuration"><a href="#Add-Configuration" class="headerlink" title="Add Configuration"></a>Add Configuration</h3><p>Add <code>.firebaserc</code> in root folder with</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;projects&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;default&quot;</span>: <span class="string">&quot;fwta-weiwio&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>This file is git ignored per my setting, so won’t appear in my repo.</p>
+</blockquote>
+<p>Add <code>firebase.json</code> with <a href="https://github.com/shadowwalker/FWTA/blob/fa2ba8cd04b21d33371e1b2b5dd45ff09c3f5e1c/firebase.json">this</a>. This file defines how I’m going to use firebase services and how to deploy them. There are two parts <code>hosting</code>, and <code>functions</code>. </p>
+<p>Hosting is used to host static web resources, traditional websites are static <code>html</code> with optional <code>js</code> and <code>css</code>, in which case hosting service is enough. </p>
+<p>But since I need SSR for better performance, I use Functions to response real http requests, and use hosting rewrite rule to rewrite traffics to corresponding serverless functions. </p>
+<p>Read more about <a href="https://firebase.google.com/docs/hosting/full-config#hosting_priority_order">those rules</a>.</p>
+<h3 id="Add-Dependencies"><a href="#Add-Dependencies" class="headerlink" title="Add Dependencies"></a>Add Dependencies</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn add firebase-admin firebase-functions</span><br><span class="line">yarn add -D firebase-tools</span><br></pre></td></tr></table></figure>
+<h2 id="Serverless-Next-js-app"><a href="#Serverless-Next-js-app" class="headerlink" title="Serverless Next.js app"></a>Serverless Next.js app</h2><p>Add <code>next.config.js</code> to <code>src/app/</code> with following</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  target: <span class="string">&#x27;serverless&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Try to build with</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn build</span><br></pre></td></tr></table></figure>
+<p>Under the <code>src/app</code>, there is a new <code>.next</code> folder, which contains build output files. Inside this foler, <code>sverless/pages</code> contains serverless functions for each page, <code>static</code> folder contains static website resources (.js) which need to be put into <code>dist/_next/static</code> for firebase hosting to host them statically.</p>
+<p>Read more about <a href="https://nextjs.org/blog/next-8#serverless-nextjs">Next.js 8 Serverless</a>.</p>
+<h2 id="Firebase-Functions"><a href="#Firebase-Functions" class="headerlink" title="Firebase Functions"></a>Firebase Functions</h2><h3 id="Write-Functions"><a href="#Write-Functions" class="headerlink" title="Write Functions"></a>Write Functions</h3><p>Add <code>index.js</code> to new folder <code>src/functions/</code> with</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> functions = <span class="built_in">require</span>(<span class="string">&#x27;firebase-functions&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> indexPage</span><br><span class="line"><span class="keyword">let</span> errorPage</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === <span class="string">&#x27;IndexPage&#x27;</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!indexPage) indexPage = <span class="built_in">require</span>(<span class="string">&#x27;./pages/index&#x27;</span>)</span><br><span class="line">  <span class="built_in">exports</span>[<span class="string">&#x27;IndexPage&#x27;</span>] = functions.https.onRequest(<span class="function">(<span class="params">req, res</span>) =&gt;</span> indexPage.render(req, res))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === <span class="string">&#x27;ErrorPage&#x27;</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!errorPage) errorPage = <span class="built_in">require</span>(<span class="string">&#x27;./pages/_error&#x27;</span>)</span><br><span class="line">  <span class="built_in">exports</span>[<span class="string">&#x27;ErrorPage&#x27;</span>] = functions.https.onRequest(<span class="function">(<span class="params">req, res</span>) =&gt;</span> errorPage.render(req, res))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The code above looks more complex than the example on <a href="https://firebase.google.com/docs/functions/get-started#add-the-addmessage-function">official documentation for firebase functions</a>. It is because I uses a <a href="https://github.com/firebase/functions-samples/issues/170#issuecomment-323375462">technique to optimize performance</a>, which use a <a href="https://cloud.google.com/functions/docs/env-var#nodejs_6_nodejs_8_python_37_and_go_111">FUNCTION_NAME environment variable</a> to avoid loading unnecessary resources when only one function is triggered. As serverless functions tends to shutdown environment (docker container) after idling for a certain amount of time. It will cold start after any function is triggered, the cold start is time consuming and it would be ideal to only load things that’s needed.</p>
+<h2 id="Deploy"><a href="#Deploy" class="headerlink" title="Deploy"></a>Deploy</h2><p>Deployment is easy at this point, just run <code>yarn deploy</code>. After deployment, you can find the url from firebase console to access the web app. I also hooked my custom domain, so you can see it at <a href="https://fwta.weiw.io/">fwta.weiw.io</a>. The SSL is enabled on firebase by default, but using SSL on custom domain needs extra configuration.</p>
+<p>I bought my domain from <a href="https://namecheap.com/">namecheap.com</a> and used <a href="https://www.cloudflare.com/">cloudflare.com</a> for SSL, DNS and CDN. These services are awesome and the latter is free!</p>
+<h2 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h2><p>It make sense to do some measurements through the development process as to analyze performance and bottle neck as I implement more and more on this app.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">weiwio:FWTA weiw$ ls -ohSR dist/<span class="built_in">functions</span>/pages</span><br><span class="line">total 1296</span><br><span class="line">-rw-r--r--  1 weiw   323K Apr 19 15:28 _error.js</span><br><span class="line">-rw-r--r--  1 weiw   323K Apr 19 15:28 index.js</span><br><span class="line"></span><br><span class="line">weiwio:FWTA weiw$ ls -ohSR dist/public/_next/static</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x  4 weiw   128B Apr 19 15:28 runtime</span><br><span class="line">drwxr-xr-x  3 weiw    96B Apr 19 15:28 -GOs-V3CpCRhUVnR5ckyh</span><br><span class="line">drwxr-xr-x  3 weiw    96B Apr 19 15:28 chunks</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/runtime:</span><br><span class="line">total 56</span><br><span class="line">-rw-r--r--  1 weiw    22K Apr 19 15:28 main-6d12b443ff1de0c04a2e.js</span><br><span class="line">-rw-r--r--  1 weiw   1.5K Apr 19 15:28 webpack-a79426b5e11f0ba5879d.js</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/-GOs-V3CpCRhUVnR5ckyh:</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x  5 weiw   160B Apr 19 15:28 pages</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/-GOs-V3CpCRhUVnR5ckyh/pages:</span><br><span class="line">total 32</span><br><span class="line">-rw-r--r--  1 weiw   7.7K Apr 19 15:28 _error.js</span><br><span class="line">-rw-r--r--  1 weiw   2.4K Apr 19 15:28 _app.js</span><br><span class="line">-rw-r--r--  1 weiw   363B Apr 19 15:28 index.js</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/chunks:</span><br><span class="line">total 368</span><br><span class="line">-rw-r--r--  1 weiw   180K Apr 19 15:28 commons.3b8a204509533087c64f.js</span><br></pre></td></tr></table></figure>
+<p>Cold starts time <code>78 ms</code></p>
+<p><a href="https://github.com/shadowwalker/weiw.io/raw/master/2019/04/17/From-Web-To-App-2/Lighthouse%20Report.pdf">Lighthouse report</a></p>
+<ul>
+<li>Performance: 100</li>
+<li>Accessibility: 70</li>
+<li>Best Practices: 100</li>
+<li>SEO: 80</li>
+</ul>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>To recap, I have setup cloud infrastructure using firebase, and successfully deploy my dummy web app to firebase hosting and serverless functions services. A snapshot commit could be found <a href="https://github.com/shadowwalker/FWTA/tree/68fe4f54b598fcc1c848aff4bd77fb75eb05f642">here</a>.</p>
+<h2 id="Next"><a href="#Next" class="headerlink" title="Next"></a>Next</h2><p>Setup TypeScript support, add some UI with Material-UI to make it more like an app rather than a web page …</p>
+]]></content>
+      <categories>
+        <category>FWTA</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+        <tag>Web App</tag>
+        <tag>PWA</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>From Web to App 3</title>
     <url>/2019/04/19/From-Web-To-App-3/</url>
     <content><![CDATA[<blockquote class="blockquote-center">
@@ -243,167 +325,6 @@
       </tags>
   </entry>
   <entry>
-    <title>From Web to App 2</title>
-    <url>/2019/04/17/From-Web-To-App-2/</url>
-    <content><![CDATA[<blockquote class="blockquote-center">
-<p><strong><a href="https://weiw.io/2019/04/15/From-Web-To-App-1">FWTA</a></strong> is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as <strong>Server Side Rendering (SSR), Progressive Web Application (PWA), Accelerated Mobile Pages (AMP), PRPL Pattern, Severless Backend</strong>.</p>
-
-</blockquote>
-
-<p>This is one of the article series which records thoughts and notes during my implementation of <strong>FWTA</strong>.</p>
-<ul>
-<li><a href="https://github.com/shadowwalker/FWTA">Github</a></li>
-<li><a href="https://fwta.weiw.io/">Demo</a></li>
-</ul>
-<p>In the previous article, I have setup a very simple web app with next.js and react.js. It feaures hot reloading in development and SSR, and has only one DOM in the index page:</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&lt;div&gt;FWTA first web app&lt;/div&gt;</span><br></pre></td></tr></table></figure>
-<p>In this article, I will setup cloud infrastructure, deploy and publish the web app to the world. Then continue setup with some of my favorite settings. From this point, it makes sense to use my favorite IDE or editor, a.k.a <a href="https://code.visualstudio.com/">VS Code</a>.</p>
-<a id="more"></a>
-
-<h2 id="Cloud"><a href="#Cloud" class="headerlink" title="Cloud"></a>Cloud</h2><p><em>Cloud</em> has been a popular term in the industry for years, it provides services and tools to help startups and developers to establish their business. There are a lot of cloud services providers now, and it will be more, just like the clouds on the sky.</p>
-<p>I personally have some experience with <a href="https://aws.amazon.com/">AWS</a>, <a href="https://azure.microsoft.com/en-us/">Azure</a>, <a href="https://cloud.google.com/">GCP</a>, <a href="https://zeit.co/">Zeit</a>, <a href="https://firebase.google.com/">Firebase</a>, as well as cloud services providers from China, such as <a href="https://www.alibabacloud.com/">Alibaba Cloud</a>, <a href="https://intl.cloud.tencent.com/">Tencent Cloud</a>, <a href="https://www.qiniu.com/">Qi Niu</a>.</p>
-<blockquote>
-<p>If you’d like to run business in Chinese Market, I recommend to host your web app and purchase domain with providers from China for easier and faster compliance.</p>
-</blockquote>
-<p>All of the cloud servcies mentioned above are great candidates for consideration when start something new. I would use Firebase with free plan here for simplicity and keep everything under control, it’s backed by Google Cloud.</p>
-<h2 id="Serverless"><a href="#Serverless" class="headerlink" title="Serverless"></a>Serverless</h2><p>In the “stone age”, people bought physical machines, put them on the rack in a clean glass sealed room. They also bought a lot of network devices, such as routers, switcher in order to turn those machines into servers. They spent a big amount of time configuring routers, switchers, DNS and paying electricity bills. And hire others to keep the machines working 24h x 7. If they still have time and money, they hire somebody else to write code for business.</p>
-<p>In the “age of cloud”, large companies bought those machines and devices, put them into large warehouses, and does every single dirty but common job for you. Let you focus on writing code for business by renting you the well prepared and maintained machines. They encourage customers to use their cloud services by buying out all the machine, SSD, RAM on the market. They maximize profits by cutting the machines into multiple pieces then rent the pieces out, they call them Virtual Machines, sometimes also called Containers when cutting into even more pieces.</p>
-<p>Now, in the “age of serverless cloud”, those large companies hide the process of signing contracts for those pieces of machines. You hand over your codes, they will execute them for you. Though these codes would likely to be executed on the same pieces of machines, you don’t have to touch them anymore and even not feeling they exist. Yep, this is what I am about to do.</p>
-<h2 id="Prepare"><a href="#Prepare" class="headerlink" title="Prepare"></a>Prepare</h2><h3 id="Restructure-Source-Code"><a href="#Restructure-Source-Code" class="headerlink" title="Restructure Source Code"></a>Restructure Source Code</h3><p>Before I mess things up, I’d like to restructure source code. This will give me benefits which is not so obvious now. Simply move <code>pages</code> folder inside a new folder <code>src/app</code>. View the <a href="https://github.com/shadowwalker/FWTA/tree/32487fd20b8c35bbf680ce24522713aad29109df">new folder structure</a>.</p>
-<h3 id="Update-Dependencies-and-Scripts"><a href="#Update-Dependencies-and-Scripts" class="headerlink" title="Update Dependencies and Scripts"></a>Update Dependencies and Scripts</h3><p>Update <code>package.json</code> like <a href="https://github.com/shadowwalker/FWTA/blob/fa2ba8cd04b21d33371e1b2b5dd45ff09c3f5e1c/package.json">this</a>. Remove <code>node_modules</code>, reinstall dependencies with <code>yarn install</code>.</p>
-<p>Note that I moved <code>next react react-dom</code> into dev dependencies, because I will use <a href="https://nextjs.org/blog/next-8#serverless-nextjs">next.js 8 build serverless target feature</a>, which will bundle up everthing needed and there is no runtime dependencies needed from <code>node_modules</code> on next.js side.</p>
-<p>The second thing to notice is I added engines configuration</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">&quot;engines&quot;: &#123;</span><br><span class="line">  &quot;node&quot;: &quot;8&quot;</span><br><span class="line">&#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>This is needed to tell firebase functions to use node.js 8 as running environment, otherwise the default version is 6. Currently only node.js 6 and 8 are supported. <a href="https://cloud.google.com/functions/docs/concepts/nodejs-10-runtime">Google just made node.js 10 available as beta on GCP Cloud Functions</a>, but not on firebase side, so hope this would be my option soon.</p>
-<p>The third thing to notice is that I use <a href="https://www.npmjs.com/package/npm-run-all">npm-run-all</a> to run sequential and parallel scripts, this is the technique really works for me to organize steps and tasks, keep things nice and clean.</p>
-<h3 id="Scripts-For-Release-and-Clean-Up"><a href="#Scripts-For-Release-and-Clean-Up" class="headerlink" title="Scripts For Release and Clean Up"></a>Scripts For Release and Clean Up</h3><p>Add these simple scripts <a href="https://github.com/shadowwalker/FWTA/blob/fa2ba8cd04b21d33371e1b2b5dd45ff09c3f5e1c/scripts/release.js">scripts/release.js</a> and <a href="https://github.com/shadowwalker/FWTA/blob/fa2ba8cd04b21d33371e1b2b5dd45ff09c3f5e1c/scripts/clean.js">scripts/clean.js</a>. This may not make sense yet, but what it’s trying to do is pretty clear. The former copy some files into some locations under <code>dist</code> folder to get ready for deployment, the latter cleans those folders up.</p>
-<blockquote>
-<p>Add <code>dist/</code> folder to .gitignore as it’s produced by release process.</p>
-</blockquote>
-<h2 id="Firebase-Setup"><a href="#Firebase-Setup" class="headerlink" title="Firebase Setup"></a>Firebase Setup</h2><h3 id="Create-Project"><a href="#Create-Project" class="headerlink" title="Create Project"></a>Create Project</h3><p>Go to <a href="https://firebase.google.com/">Firebase</a>, sign up free account and create new project, note down the project ID: <code>fwta-weiwio</code>.</p>
-<h3 id="Add-Configuration"><a href="#Add-Configuration" class="headerlink" title="Add Configuration"></a>Add Configuration</h3><p>Add <code>.firebaserc</code> in root folder with</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;projects&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;default&quot;</span>: <span class="string">&quot;fwta-weiwio&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>This file is git ignored per my setting, so won’t appear in my repo.</p>
-</blockquote>
-<p>Add <code>firebase.json</code> with <a href="https://github.com/shadowwalker/FWTA/blob/fa2ba8cd04b21d33371e1b2b5dd45ff09c3f5e1c/firebase.json">this</a>. This file defines how I’m going to use firebase services and how to deploy them. There are two parts <code>hosting</code>, and <code>functions</code>. </p>
-<p>Hosting is used to host static web resources, traditional websites are static <code>html</code> with optional <code>js</code> and <code>css</code>, in which case hosting service is enough. </p>
-<p>But since I need SSR for better performance, I use Functions to response real http requests, and use hosting rewrite rule to rewrite traffics to corresponding serverless functions. </p>
-<p>Read more about <a href="https://firebase.google.com/docs/hosting/full-config#hosting_priority_order">those rules</a>.</p>
-<h3 id="Add-Dependencies"><a href="#Add-Dependencies" class="headerlink" title="Add Dependencies"></a>Add Dependencies</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn add firebase-admin firebase-functions</span><br><span class="line">yarn add -D firebase-tools</span><br></pre></td></tr></table></figure>
-<h2 id="Serverless-Next-js-app"><a href="#Serverless-Next-js-app" class="headerlink" title="Serverless Next.js app"></a>Serverless Next.js app</h2><p>Add <code>next.config.js</code> to <code>src/app/</code> with following</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  target: <span class="string">&#x27;serverless&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Try to build with</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn build</span><br></pre></td></tr></table></figure>
-<p>Under the <code>src/app</code>, there is a new <code>.next</code> folder, which contains build output files. Inside this foler, <code>sverless/pages</code> contains serverless functions for each page, <code>static</code> folder contains static website resources (.js) which need to be put into <code>dist/_next/static</code> for firebase hosting to host them statically.</p>
-<p>Read more about <a href="https://nextjs.org/blog/next-8#serverless-nextjs">Next.js 8 Serverless</a>.</p>
-<h2 id="Firebase-Functions"><a href="#Firebase-Functions" class="headerlink" title="Firebase Functions"></a>Firebase Functions</h2><h3 id="Write-Functions"><a href="#Write-Functions" class="headerlink" title="Write Functions"></a>Write Functions</h3><p>Add <code>index.js</code> to new folder <code>src/functions/</code> with</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> functions = <span class="built_in">require</span>(<span class="string">&#x27;firebase-functions&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> indexPage</span><br><span class="line"><span class="keyword">let</span> errorPage</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === <span class="string">&#x27;IndexPage&#x27;</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!indexPage) indexPage = <span class="built_in">require</span>(<span class="string">&#x27;./pages/index&#x27;</span>)</span><br><span class="line">  <span class="built_in">exports</span>[<span class="string">&#x27;IndexPage&#x27;</span>] = functions.https.onRequest(<span class="function">(<span class="params">req, res</span>) =&gt;</span> indexPage.render(req, res))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === <span class="string">&#x27;ErrorPage&#x27;</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!errorPage) errorPage = <span class="built_in">require</span>(<span class="string">&#x27;./pages/_error&#x27;</span>)</span><br><span class="line">  <span class="built_in">exports</span>[<span class="string">&#x27;ErrorPage&#x27;</span>] = functions.https.onRequest(<span class="function">(<span class="params">req, res</span>) =&gt;</span> errorPage.render(req, res))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>The code above looks more complex than the example on <a href="https://firebase.google.com/docs/functions/get-started#add-the-addmessage-function">official documentation for firebase functions</a>. It is because I uses a <a href="https://github.com/firebase/functions-samples/issues/170#issuecomment-323375462">technique to optimize performance</a>, which use a <a href="https://cloud.google.com/functions/docs/env-var#nodejs_6_nodejs_8_python_37_and_go_111">FUNCTION_NAME environment variable</a> to avoid loading unnecessary resources when only one function is triggered. As serverless functions tends to shutdown environment (docker container) after idling for a certain amount of time. It will cold start after any function is triggered, the cold start is time consuming and it would be ideal to only load things that’s needed.</p>
-<h2 id="Deploy"><a href="#Deploy" class="headerlink" title="Deploy"></a>Deploy</h2><p>Deployment is easy at this point, just run <code>yarn deploy</code>. After deployment, you can find the url from firebase console to access the web app. I also hooked my custom domain, so you can see it at <a href="https://fwta.weiw.io/">fwta.weiw.io</a>. The SSL is enabled on firebase by default, but using SSL on custom domain needs extra configuration.</p>
-<p>I bought my domain from <a href="https://namecheap.com/">namecheap.com</a> and used <a href="https://www.cloudflare.com/">cloudflare.com</a> for SSL, DNS and CDN. These services are awesome and the latter is free!</p>
-<h2 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h2><p>It make sense to do some measurements through the development process as to analyze performance and bottle neck as I implement more and more on this app.</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">weiwio:FWTA weiw$ ls -ohSR dist/<span class="built_in">functions</span>/pages</span><br><span class="line">total 1296</span><br><span class="line">-rw-r--r--  1 weiw   323K Apr 19 15:28 _error.js</span><br><span class="line">-rw-r--r--  1 weiw   323K Apr 19 15:28 index.js</span><br><span class="line"></span><br><span class="line">weiwio:FWTA weiw$ ls -ohSR dist/public/_next/static</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x  4 weiw   128B Apr 19 15:28 runtime</span><br><span class="line">drwxr-xr-x  3 weiw    96B Apr 19 15:28 -GOs-V3CpCRhUVnR5ckyh</span><br><span class="line">drwxr-xr-x  3 weiw    96B Apr 19 15:28 chunks</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/runtime:</span><br><span class="line">total 56</span><br><span class="line">-rw-r--r--  1 weiw    22K Apr 19 15:28 main-6d12b443ff1de0c04a2e.js</span><br><span class="line">-rw-r--r--  1 weiw   1.5K Apr 19 15:28 webpack-a79426b5e11f0ba5879d.js</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/-GOs-V3CpCRhUVnR5ckyh:</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x  5 weiw   160B Apr 19 15:28 pages</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/-GOs-V3CpCRhUVnR5ckyh/pages:</span><br><span class="line">total 32</span><br><span class="line">-rw-r--r--  1 weiw   7.7K Apr 19 15:28 _error.js</span><br><span class="line">-rw-r--r--  1 weiw   2.4K Apr 19 15:28 _app.js</span><br><span class="line">-rw-r--r--  1 weiw   363B Apr 19 15:28 index.js</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/chunks:</span><br><span class="line">total 368</span><br><span class="line">-rw-r--r--  1 weiw   180K Apr 19 15:28 commons.3b8a204509533087c64f.js</span><br></pre></td></tr></table></figure>
-<p>Cold starts time <code>78 ms</code></p>
-<p><a href="https://github.com/shadowwalker/weiw.io/raw/master/2019/04/17/From-Web-To-App-2/Lighthouse%20Report.pdf">Lighthouse report</a></p>
-<ul>
-<li>Performance: 100</li>
-<li>Accessibility: 70</li>
-<li>Best Practices: 100</li>
-<li>SEO: 80</li>
-</ul>
-<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>To recap, I have setup cloud infrastructure using firebase, and successfully deploy my dummy web app to firebase hosting and serverless functions services. A snapshot commit could be found <a href="https://github.com/shadowwalker/FWTA/tree/68fe4f54b598fcc1c848aff4bd77fb75eb05f642">here</a>.</p>
-<h2 id="Next"><a href="#Next" class="headerlink" title="Next"></a>Next</h2><p>Setup TypeScript support, add some UI with Material-UI to make it more like an app rather than a web page …</p>
-]]></content>
-      <categories>
-        <category>FWTA</category>
-      </categories>
-      <tags>
-        <tag>JavaScript</tag>
-        <tag>Web App</tag>
-        <tag>PWA</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>From Web to App 4</title>
-    <url>/2019/04/22/From-Web-To-App-4/</url>
-    <content><![CDATA[<blockquote class="blockquote-center">
-<p><strong><a href="https://weiw.io/2019/04/15/From-Web-To-App-1">FWTA</a></strong> is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as <strong>Server Side Rendering (SSR), Progressive Web Application (PWA), Accelerated Mobile Pages (AMP), PRPL Pattern, Severless Backend</strong>.</p>
-
-</blockquote>
-
-<p>This is one of the article series which records thoughts and notes during my implementation of <strong>FWTA</strong>.</p>
-<ul>
-<li><a href="https://github.com/shadowwalker/FWTA">Github</a></li>
-<li><a href="https://fwta.weiw.io/">Demo</a></li>
-</ul>
-<p>In the previous article, I have added some UI to the web app to make it more like a native app. I will add PWA support to achieve the goals below:</p>
-<ul>
-<li>Add web app to home screen and launch it just like other apps</li>
-<li>Completely runs when offline</li>
-<li>Performance optimize using all the PWA powers with caches</li>
-</ul>
-<p>I wrote a <a href="https://weiw.io/2019/04/15/Progressive-Web-App/">blog</a> before to introduce PWA, now I would like to put those knowledge into action.</p>
-<a id="more"></a>
-
-<h2 id="Zero-Config-PWA-Plugin-For-Next-js"><a href="#Zero-Config-PWA-Plugin-For-Next-js" class="headerlink" title="Zero Config PWA Plugin For Next.js"></a>Zero Config PWA Plugin For Next.js</h2><p>PWA is nice, but getting it to work correctly and elegantly is not that easy. I have spent a lot of time figuring out how things work under the hood and how to use <a href="https://developers.google.com/web/tools/workbox/">workbox</a>. Then I finally came up with an elegant solution myself, <a href="https://github.com/shadowwalker/next-pwa">next-pwa</a>, which allows me to add PWA support on a next.js app cleanly and easily.</p>
-<h2 id="PWA-Support"><a href="#PWA-Support" class="headerlink" title="PWA Support"></a>PWA Support</h2><p>With the plugin, add PWA is as easy as add <code>withPWA</code> to <code>next.config.js</code></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> withTypescript = <span class="built_in">require</span>(<span class="string">&#x27;@zeit/next-typescript&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> withPWA = <span class="built_in">require</span>(<span class="string">&#x27;next-pwa&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = withPWA(withTypescript(&#123;</span><br><span class="line">  target: <span class="string">&#x27;serverless&#x27;</span></span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
-<p>Also, add one line in release script to copy the service worker and precache script to deployment folder. Now the web app will have full PWA support and could run offline.</p>
-<p>One big step here is that cold start is not a problem anymore, because I use workbox to implement a pattern called <code>Stale While Revalidate</code>. Which return the cache copy of the web app first upon request, and send http request to server to refresh the cache content on the background.</p>
-<p><img src="https://developers.google.com/web/tools/workbox/images/modules/workbox-strategies/stale-while-revalidate.png"></p>
-<blockquote>
-<p>Image from <a href="https://developers.google.com/web/tools/workbox/modules/workbox-strategies">Workbox Docs</a></p>
-</blockquote>
-<p>Therefore, the user only feels snapy page load instead of waiting for http request to complete fetching resources. Next time the user open the app, the refreshed cache is used, this process also eliminates the need to update the app constantly, better than native app!</p>
-<h2 id="Peformance"><a href="#Peformance" class="headerlink" title="Peformance"></a>Peformance</h2><p>File sizes remains unchanged</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">weiwio:FWTA weiw$ ls -ohSR dist/<span class="built_in">functions</span>/pages</span><br><span class="line">total 10656</span><br><span class="line">-rw-r--r--  1 weiw   888K Apr 24 22:03 index.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 explore.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 feed.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 new.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 me.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 _error.js</span><br><span class="line"></span><br><span class="line">weiwio:FWTA weiw$ ls -ohSR dist/public/_next/static</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x  4 weiw   128B Apr 24 22:03 runtime</span><br><span class="line">drwxr-xr-x  3 weiw    96B Apr 24 22:03 XU3iKTvfpizCbGajCFphN</span><br><span class="line">drwxr-xr-x  3 weiw    96B Apr 24 22:03 chunks</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/runtime:</span><br><span class="line">total 200</span><br><span class="line">-rw-r--r--  1 weiw    92K Apr 24 22:03 main-06c512ec64fb9631c29a.js</span><br><span class="line">-rw-r--r--  1 weiw   1.5K Apr 24 22:03 webpack-a79426b5e11f0ba5879d.js</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/XU3iKTvfpizCbGajCFphN:</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x  9 weiw   288B Apr 24 22:03 pages</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/XU3iKTvfpizCbGajCFphN/pages:</span><br><span class="line">total 600</span><br><span class="line">-rw-r--r--  1 weiw   241K Apr 24 22:03 _app.js</span><br><span class="line">-rw-r--r--  1 weiw    36K Apr 24 22:03 _error.js</span><br><span class="line">-rw-r--r--  1 weiw   2.3K Apr 24 22:03 index.js</span><br><span class="line">-rw-r--r--  1 weiw   1.3K Apr 24 22:03 explore.js</span><br><span class="line">-rw-r--r--  1 weiw   1.3K Apr 24 22:03 feed.js</span><br><span class="line">-rw-r--r--  1 weiw   1.3K Apr 24 22:03 me.js</span><br><span class="line">-rw-r--r--  1 weiw   1.3K Apr 24 22:03 new.js</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/chunks:</span><br><span class="line">total 224</span><br><span class="line">-rw-r--r--  1 weiw   110K Apr 24 22:03 commons.635a9eee6d171762a8dc.js</span><br></pre></td></tr></table></figure>
-<p>Code start time is not a problem at this point.</p>
-<p><a href="https://github.com/shadowwalker/weiw.io/raw/master/2019/04/22/From-Web-To-App-4/Lighthouse%20Report.pdf">Lighthouse report</a></p>
-<ul>
-<li>Performance: 97</li>
-<li>Accessibility: 63</li>
-<li>Best Practices: 100</li>
-<li>SEO: 100</li>
-<li>PWA: 100 - Nice!</li>
-</ul>
-<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>The snapshot commit could be find <a href="https://github.com/shadowwalker/FWTA/tree/25c801e275974a43927f11a1eb43d149df2a11fa">here</a>.</p>
-<h2 id="Next"><a href="#Next" class="headerlink" title="Next"></a>Next</h2><p>Global State Management, firebase authentication, firebase firestore …</p>
-]]></content>
-      <categories>
-        <category>FWTA</category>
-      </categories>
-      <tags>
-        <tag>JavaScript</tag>
-        <tag>Web App</tag>
-        <tag>PWA</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>From Web to App 5</title>
-    <url>/2019/04/24/From-Web-To-App-5/</url>
-    <content><![CDATA[<blockquote class="blockquote-center">
-<p><strong><a href="https://weiw.io/2019/04/15/From-Web-To-App-1">FWTA</a></strong> is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as <strong>Server Side Rendering (SSR), Progressive Web Application (PWA), Accelerated Mobile Pages (AMP), PRPL Pattern, Severless Backend</strong>.</p>
-
-</blockquote>
-
-<p>This is one of the article series which records thoughts and notes during my implementation of <strong>FWTA</strong>.</p>
-<ul>
-<li><a href="https://github.com/shadowwalker/FWTA">Github</a></li>
-<li><a href="https://fwta.weiw.io/">Demo</a></li>
-</ul>
-<p>In the previous article, I have deployed my web app to firebase using its hosting and functions service. In this article, I would add some UI to make it more like an app rather than dummy web page.</p>
-<a id="more"></a>]]></content>
-      <categories>
-        <category>FWTA</category>
-      </categories>
-      <tags>
-        <tag>JavaScript</tag>
-        <tag>Web App</tag>
-        <tag>PWA</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Progressive Web App</title>
     <url>/2019/04/15/Progressive-Web-App/</url>
     <content><![CDATA[<p><img src="https://blog.ionicframework.com/wp-content/uploads/2016/05/what-is-pwa-img.png" alt="PWA"></p>
@@ -485,6 +406,85 @@
 ]]></content>
       <categories>
         <category>Web</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+        <tag>Web App</tag>
+        <tag>PWA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>From Web to App 4</title>
+    <url>/2019/04/22/From-Web-To-App-4/</url>
+    <content><![CDATA[<blockquote class="blockquote-center">
+<p><strong><a href="https://weiw.io/2019/04/15/From-Web-To-App-1">FWTA</a></strong> is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as <strong>Server Side Rendering (SSR), Progressive Web Application (PWA), Accelerated Mobile Pages (AMP), PRPL Pattern, Severless Backend</strong>.</p>
+
+</blockquote>
+
+<p>This is one of the article series which records thoughts and notes during my implementation of <strong>FWTA</strong>.</p>
+<ul>
+<li><a href="https://github.com/shadowwalker/FWTA">Github</a></li>
+<li><a href="https://fwta.weiw.io/">Demo</a></li>
+</ul>
+<p>In the previous article, I have added some UI to the web app to make it more like a native app. I will add PWA support to achieve the goals below:</p>
+<ul>
+<li>Add web app to home screen and launch it just like other apps</li>
+<li>Completely runs when offline</li>
+<li>Performance optimize using all the PWA powers with caches</li>
+</ul>
+<p>I wrote a <a href="https://weiw.io/2019/04/15/Progressive-Web-App/">blog</a> before to introduce PWA, now I would like to put those knowledge into action.</p>
+<a id="more"></a>
+
+<h2 id="Zero-Config-PWA-Plugin-For-Next-js"><a href="#Zero-Config-PWA-Plugin-For-Next-js" class="headerlink" title="Zero Config PWA Plugin For Next.js"></a>Zero Config PWA Plugin For Next.js</h2><p>PWA is nice, but getting it to work correctly and elegantly is not that easy. I have spent a lot of time figuring out how things work under the hood and how to use <a href="https://developers.google.com/web/tools/workbox/">workbox</a>. Then I finally came up with an elegant solution myself, <a href="https://github.com/shadowwalker/next-pwa">next-pwa</a>, which allows me to add PWA support on a next.js app cleanly and easily.</p>
+<h2 id="PWA-Support"><a href="#PWA-Support" class="headerlink" title="PWA Support"></a>PWA Support</h2><p>With the plugin, add PWA is as easy as add <code>withPWA</code> to <code>next.config.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> withTypescript = <span class="built_in">require</span>(<span class="string">&#x27;@zeit/next-typescript&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> withPWA = <span class="built_in">require</span>(<span class="string">&#x27;next-pwa&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = withPWA(withTypescript(&#123;</span><br><span class="line">  target: <span class="string">&#x27;serverless&#x27;</span></span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+<p>Also, add one line in release script to copy the service worker and precache script to deployment folder. Now the web app will have full PWA support and could run offline.</p>
+<p>One big step here is that cold start is not a problem anymore, because I use workbox to implement a pattern called <code>Stale While Revalidate</code>. Which return the cache copy of the web app first upon request, and send http request to server to refresh the cache content on the background.</p>
+<p><img src="https://developers.google.com/web/tools/workbox/images/modules/workbox-strategies/stale-while-revalidate.png"></p>
+<blockquote>
+<p>Image from <a href="https://developers.google.com/web/tools/workbox/modules/workbox-strategies">Workbox Docs</a></p>
+</blockquote>
+<p>Therefore, the user only feels snapy page load instead of waiting for http request to complete fetching resources. Next time the user open the app, the refreshed cache is used, this process also eliminates the need to update the app constantly, better than native app!</p>
+<h2 id="Peformance"><a href="#Peformance" class="headerlink" title="Peformance"></a>Peformance</h2><p>File sizes remains unchanged</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">weiwio:FWTA weiw$ ls -ohSR dist/<span class="built_in">functions</span>/pages</span><br><span class="line">total 10656</span><br><span class="line">-rw-r--r--  1 weiw   888K Apr 24 22:03 index.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 explore.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 feed.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 new.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 me.js</span><br><span class="line">-rw-r--r--  1 weiw   886K Apr 24 22:03 _error.js</span><br><span class="line"></span><br><span class="line">weiwio:FWTA weiw$ ls -ohSR dist/public/_next/static</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x  4 weiw   128B Apr 24 22:03 runtime</span><br><span class="line">drwxr-xr-x  3 weiw    96B Apr 24 22:03 XU3iKTvfpizCbGajCFphN</span><br><span class="line">drwxr-xr-x  3 weiw    96B Apr 24 22:03 chunks</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/runtime:</span><br><span class="line">total 200</span><br><span class="line">-rw-r--r--  1 weiw    92K Apr 24 22:03 main-06c512ec64fb9631c29a.js</span><br><span class="line">-rw-r--r--  1 weiw   1.5K Apr 24 22:03 webpack-a79426b5e11f0ba5879d.js</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/XU3iKTvfpizCbGajCFphN:</span><br><span class="line">total 0</span><br><span class="line">drwxr-xr-x  9 weiw   288B Apr 24 22:03 pages</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/XU3iKTvfpizCbGajCFphN/pages:</span><br><span class="line">total 600</span><br><span class="line">-rw-r--r--  1 weiw   241K Apr 24 22:03 _app.js</span><br><span class="line">-rw-r--r--  1 weiw    36K Apr 24 22:03 _error.js</span><br><span class="line">-rw-r--r--  1 weiw   2.3K Apr 24 22:03 index.js</span><br><span class="line">-rw-r--r--  1 weiw   1.3K Apr 24 22:03 explore.js</span><br><span class="line">-rw-r--r--  1 weiw   1.3K Apr 24 22:03 feed.js</span><br><span class="line">-rw-r--r--  1 weiw   1.3K Apr 24 22:03 me.js</span><br><span class="line">-rw-r--r--  1 weiw   1.3K Apr 24 22:03 new.js</span><br><span class="line"></span><br><span class="line">dist/public/_next/static/chunks:</span><br><span class="line">total 224</span><br><span class="line">-rw-r--r--  1 weiw   110K Apr 24 22:03 commons.635a9eee6d171762a8dc.js</span><br></pre></td></tr></table></figure>
+<p>Code start time is not a problem at this point.</p>
+<p><a href="https://github.com/shadowwalker/weiw.io/raw/master/2019/04/22/From-Web-To-App-4/Lighthouse%20Report.pdf">Lighthouse report</a></p>
+<ul>
+<li>Performance: 97</li>
+<li>Accessibility: 63</li>
+<li>Best Practices: 100</li>
+<li>SEO: 100</li>
+<li>PWA: 100 - Nice!</li>
+</ul>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>The snapshot commit could be find <a href="https://github.com/shadowwalker/FWTA/tree/25c801e275974a43927f11a1eb43d149df2a11fa">here</a>.</p>
+<h2 id="Next"><a href="#Next" class="headerlink" title="Next"></a>Next</h2><p>Global State Management, firebase authentication, firebase firestore …</p>
+]]></content>
+      <categories>
+        <category>FWTA</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+        <tag>Web App</tag>
+        <tag>PWA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>From Web to App 5</title>
+    <url>/2019/04/24/From-Web-To-App-5/</url>
+    <content><![CDATA[<blockquote class="blockquote-center">
+<p><strong><a href="https://weiw.io/2019/04/15/From-Web-To-App-1">FWTA</a></strong> is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as <strong>Server Side Rendering (SSR), Progressive Web Application (PWA), Accelerated Mobile Pages (AMP), PRPL Pattern, Severless Backend</strong>.</p>
+
+</blockquote>
+
+<p>This is one of the article series which records thoughts and notes during my implementation of <strong>FWTA</strong>.</p>
+<ul>
+<li><a href="https://github.com/shadowwalker/FWTA">Github</a></li>
+<li><a href="https://fwta.weiw.io/">Demo</a></li>
+</ul>
+<p>In the previous article, I have deployed my web app to firebase using its hosting and functions service. In this article, I would add some UI to make it more like an app rather than dummy web page.</p>
+<a id="more"></a>]]></content>
+      <categories>
+        <category>FWTA</category>
       </categories>
       <tags>
         <tag>JavaScript</tag>
