@@ -6,7 +6,7 @@
   <link href="https://weiw.io/atom.xml" rel="self"/>
   
   <link href="https://weiw.io/"/>
-  <updated>2020-07-03T05:47:06.481Z</updated>
+  <updated>2020-12-26T23:48:57.924Z</updated>
   <id>https://weiw.io/</id>
   
   <author>
@@ -17,37 +17,37 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>From Web to App 5</title>
-    <link href="https://weiw.io/2019/04/24/From-Web-To-App-5/"/>
-    <id>https://weiw.io/2019/04/24/From-Web-To-App-5/</id>
-    <published>2019-04-25T03:12:59.000Z</published>
-    <updated>2020-07-03T05:47:06.481Z</updated>
+    <title>2020 年末找工小结</title>
+    <link href="https://weiw.io/2020/12/24/2020-Job-Hunt/"/>
+    <id>https://weiw.io/2020/12/24/2020-Job-Hunt/</id>
+    <published>2020-12-25T05:30:18.000Z</published>
+    <updated>2020-12-26T23:48:57.924Z</updated>
     
-    <content type="html"><![CDATA[<blockquote class="blockquote-center"><p><strong><a href="https://weiw.io/2019/04/15/From-Web-To-App-1">FWTA</a></strong> is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as <strong>Server Side Rendering (SSR), Progressive Web Application (PWA), Accelerated Mobile Pages (AMP), PRPL Pattern, Severless Backend</strong>.</p></blockquote><p>This is one of the article series which records thoughts and notes during my implementation of <strong>FWTA</strong>.</p><ul><li><a href="https://github.com/shadowwalker/FWTA">Github</a></li><li><a href="https://fwta.weiw.io/">Demo</a></li></ul><p>In the previous article, I have deployed my web app to firebase using its hosting and functions service. In this article, I would add some UI to make it more like an app rather than dummy web page.</p><a id="more"></a>]]></content>
-    
-    
-    <summary type="html">&lt;blockquote class=&quot;blockquote-center&quot;&gt;
-&lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://weiw.io/2019/04/15/From-Web-To-App-1&quot;&gt;FWTA&lt;/a&gt;&lt;/strong&gt; is a project embraces the vision to create cross-platform mobile first applications using morden web technologies and best practices, such as &lt;strong&gt;Server Side Rendering (SSR), Progressive Web Application (PWA), Accelerated Mobile Pages (AMP), PRPL Pattern, Severless Backend&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;/blockquote&gt;
-
-&lt;p&gt;This is one of the article series which records thoughts and notes during my implementation of &lt;strong&gt;FWTA&lt;/strong&gt;.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://github.com/shadowwalker/FWTA&quot;&gt;Github&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://fwta.weiw.io/&quot;&gt;Demo&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;In the previous article, I have deployed my web app to firebase using its hosting and functions service. In this article, I would add some UI to make it more like an app rather than dummy web page.&lt;/p&gt;</summary>
+    <content type="html"><![CDATA[<p>2020年末尾准备跳槽找了一波工作，虽然在最开始对自己的面试水平很没有信心，但最终结果还可以。期间也遇到一些比较有意思事情，很棒的人，还有一些心得体会。值得记录和分享一下。</p><h2 id="The-Funnel"><a href="#The-Funnel" class="headerlink" title="The Funnel"></a>The Funnel</h2><ul><li><p>30: 投简历+内推+Recruiter Reach Out</p></li><li><p>3: 简历拒绝</p></li><li><p>1: 第一轮挂</p></li><li><p>7: 因为时间安排不过来，自己主动取消后续面试</p></li><li><p>10: 完成Virtual OnSite</p></li><li><p>10: 拿到的Offer数量，超过预期</p></li></ul><a id="more"></a><p>今年没有投也没有推Facebook, Google, Apple这些大公司，但运气比较好最后也拿到了一些旗鼓相当的不错的Offer，最后选了TC (未上市公司的期权和股票尽量根据公开数据去预估) 排名第二的公司，具体哪家就不在这里说了，认识我的可以私下聊。</p><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><h3 id="简历"><a href="#简历" class="headerlink" title="简历"></a>简历</h3><p>我来了美国之后一直用<code>latex</code>来编译我的简历。这样做除了格式比较统一美观之外，最大好处是可以把所有经历信息放在文档中。针对不同岗位投简历时，不想展示的部份直接注释掉再编译一下就好了。我也用<code>git</code>和<code>github</code>来管理不同的简历版本和分枝，同时备份。这样做的坏处就是每次我要修改点什么，因为很久不用<code>latex</code>，我都要重新去查相关的语法。</p><p>大多数人应该没有这么硬核，用word等工具也不错，但殊途同归最后都要转换成PDF文档。关于简历，除了正常的检查各类错误和match岗位需求以外，我觉得还有个不错的经验就是添加各类的链接，你的LinkedIn，GitHub主页和博客等链接，学校，学院，曾经公司主页链接，邮箱可以加<code>mailto:</code>链接，电话可以加<code>tel:</code>链接，通通都可以加上。这样方便看的人直接点击来了解你的更多信息或者联系你，同时不影响打印出来的效果。更高级的玩法，你可以用带analytics的短地址tinyurl服务来做一层跳转，还能知道这个链接有没有被点击过，被点击了多少次，来提前判断人家是否对你有兴趣。</p><p><img src="https://github.com/shadowwalker/weiw.io/blob/master/2020/12/24/2020-Job-Hunt/resume-latex.png?raw=true"></p><h3 id="LinkedIn"><a href="#LinkedIn" class="headerlink" title="LinkedIn"></a>LinkedIn</h3><p>我会经常会维护LinkedIn主页，它可以用来展示所有你职业相关的信息，通常一两页简历的版面很难容纳这些信息。同时提高主页的信息完善，也可以提交HR或者猎头来找你的机会，所以那怕你不打算跳槽，也应该维护好你的主页信息。如果你不知道怎么完善，可以参考一下我的主页：<a href="https://www.linkedin.com/in/weiwio/">weiwio</a></p><p>另外我的LinkedIn目前有7000+的connection，主要来源是平时闲着没事会把它算法推荐的可能认识的人都给加一遍，认识不认识不重要，先加上再说，日积月累到了现在。这么做主要有几个好处。一个是SEO，当HR搜人的时候，你在结果中的权重可能提高，更容易被看到。另一个是当你要内推的时候，可以直接给人发私信，不用再等别人通过你的好友请求，甚至可以直接找hiring manager聊有没有合适岗位，大大提高效率。还可以找到目标公司的员工了解工作环境和氛围等。早几年，加人很容易没什么限制，现在LinkedIn已经做了很多每天每周发送请求数量的限制。我后来才知道我这个connection数量和一个普通猎头也差不多了哈。</p><h3 id="算法和系统设计"><a href="#算法和系统设计" class="headerlink" title="算法和系统设计"></a>算法和系统设计</h3><p>刷题没啥说的，大家都知道主要是LeetCode，另外HackerRank，TopCoder都可以。我差不多从10月才开始大规模刷题，至今才刷了371道 (我朋友基本都刷到500+)，分布是Easy 142, Medium 189, Hard 41。我刷题水平比较差，很多时候都要直接看别人的答案然后花很多时间理解。刷题一定要做好时间安排，由其一边工作一边刷题的情况。然后要尽量覆盖到所有数据结构知识点和算法，做好同类型题目的总结归纳，生疏的部份推荐去看GeeksForGeeks上面的文章复习一下。</p><p>面试之前也可以看看公司的面经，去<a href="https://www.xiakexing.me/">侠客行</a>看，别去地里看，更别给地里充钱。另外现在很多小公司用第三方比如Karat做第一轮面试，我去找了所有面经题目自己做了一遍。相当于已经有了一个题库可以轻松过很多公司的第一轮。同样，我也做了所有亚麻OA的题目。</p><h3 id="开源项目积累"><a href="#开源项目积累" class="headerlink" title="开源项目积累"></a>开源项目积累</h3><p>从去年开始，因为兴趣，做了一些很小的开源项目，也预想过这可以在面试的时候作为一个补充展示。实际也符合我的预期，当听到我过去一年收获了700+星和2K+ Repository使用的时候，有一大半面试官都表示不错，会问你做这个项目的动机和收获，有些还表示面试完了要去看看我的项目主页。项目地址：<a href="https://github.com/shadowwalker/next-pwa">next-pwa</a>和过去的<a href="https://star-history.t9t.io/#shadowwalker/next-pwa">星星增长记录</a>。总体来讲，感觉这方面有15%到20%的加分。</p><h2 id="目标和计划"><a href="#目标和计划" class="headerlink" title="目标和计划"></a>目标和计划</h2><p>我用notion(这是很好用的工具，推荐大家都去试试，也是个很有潜力的startup，可惜给我简历拒了)搜集了157家公司的各种信息链接，像crunchbase和level.fyi等都是很有用的。然后挑选出了一些目标公司同时分成三个档。</p><p><img src="https://github.com/shadowwalker/weiw.io/blob/master/2020/12/24/2020-Job-Hunt/companies-1.png?raw=true"></p><p>然后我创建了一个Board View来跟踪自己的面试情况和进度，并随时记下有用的笔记。</p><p><img src="https://github.com/shadowwalker/weiw.io/blob/master/2020/12/24/2020-Job-Hunt/companies-2.png?raw=true"></p>]]></content>
     
     
+    <summary type="html">&lt;p&gt;2020年末尾准备跳槽找了一波工作，虽然在最开始对自己的面试水平很没有信心，但最终结果还可以。期间也遇到一些比较有意思事情，很棒的人，还有一些心得体会。值得记录和分享一下。&lt;/p&gt;
+&lt;h2 id=&quot;The-Funnel&quot;&gt;&lt;a href=&quot;#The-Funnel&quot; class=&quot;headerlink&quot; title=&quot;The Funnel&quot;&gt;&lt;/a&gt;The Funnel&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;30: 投简历+内推+Recruiter Reach Out&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;3: 简历拒绝&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;1: 第一轮挂&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;7: 因为时间安排不过来，自己主动取消后续面试&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;10: 完成Virtual OnSite&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;10: 拿到的Offer数量，超过预期&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</summary>
     
-    <category term="FWTA" scheme="https://weiw.io/categories/FWTA/"/>
     
     
-    <category term="Web App" scheme="https://weiw.io/tags/Web-App/"/>
+    <category term="Jobs" scheme="https://weiw.io/categories/Jobs/"/>
     
-    <category term="JavaScript" scheme="https://weiw.io/tags/JavaScript/"/>
     
-    <category term="PWA" scheme="https://weiw.io/tags/PWA/"/>
+    <category term="Jobs" scheme="https://weiw.io/tags/Jobs/"/>
     
   </entry>
   
